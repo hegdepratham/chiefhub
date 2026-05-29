@@ -18,7 +18,7 @@ export function getRecentMessages(channel: string): ChatMessage[] {
       SELECT *
       FROM chat_messages
       WHERE channel = ?
-      ORDER BY created_at DESC
+      ORDER BY created_at ASC
       LIMIT 50
       `
     )

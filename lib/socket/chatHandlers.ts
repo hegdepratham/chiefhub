@@ -8,13 +8,25 @@ export function registerChatHandlers(
   io: Server,
   socket: Socket
 ) {
-  socket.on("join-channel", (channel: string) => {
-    socket.join(channel);
+  console.log(
+    `Chat handlers registered for ${socket.id}`
+  );
 
-    console.log(
-      `${socket.id} joined channel ${channel}`
-    );
-  });
+  socket.on(
+    "join-channel",
+    (channel: string) => {
+      console.log(
+        "JOIN EVENT FIRED:",
+        channel
+      );
+
+      socket.join(channel);
+
+      console.log(
+        `${socket.id} joined channel ${channel}`
+      );
+    }
+  );
 
   socket.on(
     "send-message",
@@ -24,17 +36,47 @@ export function registerChatHandlers(
       channel: string;
       message: string;
     }) => {
-      insertMessage(
-        data.playerTag,
-        data.playerName,
-        data.channel,
-        data.message
+      console.log(
+        "SEND MESSAGE EVENT FIRED"
       );
 
-      io.to(data.channel).emit(
-        "new-message",
+      console.log(
+        "Received message:",
         data
       );
+
+      try {
+        insertMessage(
+          data.playerTag,
+          data.playerName,
+          data.channel,
+          data.message
+        );
+
+        console.log(
+          "Message saved to database"
+        );
+
+        io.to(data.channel).emit(
+          "new-message",
+          data
+        );
+
+        console.log(
+          "Message broadcasted"
+        );
+      } catch (error) {
+        console.error(
+          "Failed to save message:",
+          error
+        );
+      }
     }
   );
+
+  socket.on("disconnect", () => {
+    console.log(
+      `Socket disconnected: ${socket.id}`
+    );
+  });
 }
