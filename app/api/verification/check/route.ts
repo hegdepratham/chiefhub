@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { saveVerifiedPlayer } from "@/lib/db/queries/verifiedPlayers";
 
 export async function POST(request: Request) {
   try {
@@ -21,6 +22,19 @@ export async function POST(request: Request) {
     });
 
     const result = await response.json();
+
+    if (result.status === "ok") {
+      saveVerifiedPlayer(
+      playerTag,
+      playerTag // temporary placeholder for player_name
+      );
+    }
+
+return NextResponse.json({
+  verified: result.status === "ok",
+  status: response.status,
+  result,
+});
 
     return NextResponse.json({
       verified: result.status === "ok",
