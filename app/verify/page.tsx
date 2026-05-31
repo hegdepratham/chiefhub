@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export default function VerifyPage() {
   const [playerTag, setPlayerTag] = useState("");
+  const [apiToken, setApiToken] = useState("");
   const [code, setCode] = useState("");
 
   async function generateCode() {
@@ -17,6 +18,7 @@ export default function VerifyPage() {
         },
         body: JSON.stringify({
           playerTag,
+          apiToken,
         }),
       }
     );
@@ -41,6 +43,15 @@ export default function VerifyPage() {
           setPlayerTag(e.target.value)
         }
       />
+
+      <input
+        className="border p-2 mr-2"
+        placeholder="Your Clash API Token"
+        value={apiToken}
+        onChange={(e) =>
+        setApiToken(e.target.value)
+  }
+/>
 
       <button
         onClick={generateCode}

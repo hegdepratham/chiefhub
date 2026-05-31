@@ -10,7 +10,7 @@ export async function POST(
   request: NextRequest
 ) {
   try {
-    const { playerTag } =
+    const { playerTag, apiToken } =
       await request.json();
 
     if (!playerTag) {
