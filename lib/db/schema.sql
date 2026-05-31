@@ -41,6 +41,18 @@ CREATE TABLE IF NOT EXISTS verified_players (
   verified_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS tracked_players (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+  player_tag TEXT NOT NULL UNIQUE,
+
+  tracking_started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+  tracking_expires_at DATETIME NOT NULL,
+
+  last_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX IF NOT EXISTS idx_players_tag
 ON players(player_tag);
 
@@ -52,3 +64,6 @@ ON attendance_records(player_tag);
 
 CREATE INDEX IF NOT EXISTS idx_verified_players_tag
 ON verified_players(player_tag);
+
+CREATE INDEX IF NOT EXISTS idx_tracked_players_tag
+ON tracked_players(player_tag);
