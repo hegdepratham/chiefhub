@@ -1,34 +1,41 @@
-// app/api/verification/check/route.ts
-
 import { NextResponse } from "next/server";
-import { getVerificationCode } from "@/lib/db/queries/verification";
 
 export async function POST(request: Request) {
-  const { playerTag } = await request.json();
+  try {
+    const { playerTag, apiToken } = await request.json();
 
-  const verification = getVerificationCode(playerTag);
+    const url =
+      `https://api.clashofclans.com/v1/players/${encodeURIComponent(
+        playerTag
+      )}/verifytoken`;
 
-  if (!verification) {
-    return NextResponse.json(
-      { verified: false, reason: "No verification code found" },
-      { status: 404 }
-    );
-  }
-
-  const response = await fetch(
-    `https://api.clashofclans.com/v1/players/${encodeURIComponent(playerTag)}`,
-    {
+    const response = await fetch(url, {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.COC_API_TOKEN}`,
+        "Content-Type": "application/json",
       },
-    }
-  );
+      body: JSON.stringify({
+        token: apiToken,
+      }),
+    });
 
-  const player = await response.json();
+    const result = await response.json();
 
-  return NextResponse.json({
-    storedCode: verification.code,
-    playerToken: player.apiToken,
-    verified: verification.code === player.apiToken,
-  });
+    return NextResponse.json({
+      verified: result.status === "ok",
+      status: response.status,
+      result,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        verified: false,
+        error: "Verification failed",
+      },
+      { status: 500 }
+    );
+  }
 }

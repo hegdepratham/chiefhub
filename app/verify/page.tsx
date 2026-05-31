@@ -5,16 +5,16 @@ import { useState } from "react";
 export default function VerifyPage() {
   const [playerTag, setPlayerTag] = useState("");
   const [apiToken, setApiToken] = useState("");
-  const [code, setCode] = useState("");
+  const [verified, setVerified] = useState(false);
+  const [message, setMessage] = useState("");
 
-  async function generateCode() {
+  async function verifyAccount() {
     const response = await fetch(
-      "/api/verification/generate",
+      "/api/verification/check",
       {
         method: "POST",
         headers: {
-          "Content-Type":
-            "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           playerTag,
@@ -23,10 +23,15 @@ export default function VerifyPage() {
       }
     );
 
-    const data =
-      await response.json();
+    const data = await response.json();
 
-    setCode(data.code);
+    setVerified(data.verified);
+
+    if (data.verified) {
+      setMessage("✅ Account Verified");
+    } else {
+      setMessage("❌ Verification Failed");
+    }
   }
 
   return (
@@ -46,24 +51,29 @@ export default function VerifyPage() {
 
       <input
         className="border p-2 mr-2"
-        placeholder="Your Clash API Token"
+        placeholder="API Token"
         value={apiToken}
         onChange={(e) =>
-        setApiToken(e.target.value)
-  }
-/>
+          setApiToken(e.target.value)
+        }
+      />
 
       <button
-        onClick={generateCode}
-        className="bg-blue-500 text-white px-4 py-2"
+        onClick={verifyAccount}
+        className="bg-green-500 text-white px-4 py-2"
       >
-        Generate Code
+        Verify
       </button>
 
-      {code && (
+      {message && (
         <div className="mt-4">
-          Verification Code:
-          <strong> {code}</strong>
+          {message}
+        </div>
+      )}
+
+      {verified && (
+        <div className="mt-2 text-green-600 font-bold">
+          Verified Successfully
         </div>
       )}
     </div>

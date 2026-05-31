@@ -32,14 +32,6 @@ CREATE TABLE IF NOT EXISTS attendance_records (
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS verification_codes (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  player_tag TEXT NOT NULL,
-  code TEXT NOT NULL,
-  expires_at TEXT NOT NULL,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE INDEX IF NOT EXISTS idx_players_tag
 ON players(player_tag);
 
@@ -48,6 +40,3 @@ ON chat_messages(channel);
 
 CREATE INDEX IF NOT EXISTS idx_attendance_player
 ON attendance_records(player_tag);
-
-CREATE INDEX IF NOT EXISTS idx_verification_player
-ON verification_codes(player_tag);
