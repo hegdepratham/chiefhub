@@ -34,23 +34,27 @@ CREATE TABLE IF NOT EXISTS attendance_records (
 
 CREATE TABLE IF NOT EXISTS verified_players (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-
   player_tag TEXT NOT NULL UNIQUE,
   player_name TEXT NOT NULL,
-
   verified_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS tracked_players (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-
   player_tag TEXT NOT NULL UNIQUE,
-
   tracking_started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
   tracking_expires_at DATETIME NOT NULL,
-
   last_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS attendance_records (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  player_tag TEXT NOT NULL,
+  war_id TEXT NOT NULL,
+  attacks_used INTEGER NOT NULL DEFAULT 0,
+  attacks_available INTEGER NOT NULL DEFAULT 0,
+  is_cwl INTEGER NOT NULL DEFAULT 0,
+  recorded_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX IF NOT EXISTS idx_players_tag
@@ -67,3 +71,6 @@ ON verified_players(player_tag);
 
 CREATE INDEX IF NOT EXISTS idx_tracked_players_tag
 ON tracked_players(player_tag);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_attendance_war_player
+ON attendance_records(war_id, player_tag);
