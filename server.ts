@@ -1,6 +1,7 @@
 import next from "next";
 import { createServer } from "http";
 import { parse } from "url";
+import { startScheduler } from "./lib/jobs/scheduler";
 
 import { initializeSocket } from "@/lib/socket";
 
@@ -25,7 +26,7 @@ app.prepare().then(() => {
   });
 
   initializeSocket(httpServer);
-
+  startScheduler();
   httpServer.listen(port, () => {
     console.log(
       `> Server ready on http://${hostname}:${port}`
